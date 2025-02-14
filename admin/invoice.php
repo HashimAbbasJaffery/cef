@@ -30,10 +30,21 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
             </div>
         </div>
         <div class="amounts container-fluid" style="margin-top: 30px;">
-            <label for="cef">
-                <p>cef</p>
-                <input type="text" id="cef" />
-            </label>
+            <div class="details" style="margin-bottom: 10px;">
+                <label for="cef" style="width: 33.33%;">
+                    <p style="margin-bottom: 0px;">cef</p>
+                    <input type="text" id="cef"  style="width: 98%;"/>
+                </label>
+                <label for="issue_date" style="width: 33.33%;">
+                    <p style="margin-bottom: 0px;">Issue Date</p>
+                    <input type="date" id="issue_date" style="width: 98%;"/>
+                </label>
+                <label for="expiry_date" style="width: 33.33%;">
+                    <p style="margin-bottom: 0px;">Expiry Date</p>
+                    <input type="date" id="expiry_date" style="width: 98%;"/>
+                </label>
+            </div>
+            <p style="margin-bottom: 0px;">Amounts</p>
             <div class="amount" v-for="(payment, index) in payments">
                 <div class="description" style="width: 100%; display: flex; align-items: start;">
                     <input type="text" style="width: 60%; margin-right: 10px;" v-model="payment.description" placeholder="Description" />
