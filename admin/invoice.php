@@ -69,7 +69,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 <p>Current Payable Amount: <span v-text="payments.reduce((sum, item) =>  item.cp ? sum + item.price : sum, 0)"></span>/-</p>
             </div>
             <div style="width: 50%;">
-                <button class="btn-primary" style="border: none; padding: 5px 10px 5px 10px;" @click="save">Update</button>
+                <button class="btn-primary" style="border: none; padding: 5px 10px 5px 10px;" @click="save">Save</button>
             </div>
         </div>
         </div>
