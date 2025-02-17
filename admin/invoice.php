@@ -27,21 +27,22 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 <p><span>Address: </span><?php  echo $customer["adress"] ?></p>
                 <p><span>Phone: </span><?php echo $customer['mobile'] ?></p>
                 <a href="generate_invoice.php?id=<?php echo $customer["id"] ?>" class="bg-primary" style="padding: 5px 10px 5px 10px; color: white; margin-bottom: 30px;">Generate Invoice</a>
+                <a href="offer.php?id=<?php echo $customer["id"] ?>" class="ml-2 bg-dark" style="padding: 5px 10px 5px 10px; color: white; margin-bottom: 30px;">Offer</a>
             </div>
         </div>
         <div class="amounts container-fluid" style="margin-top: 30px;">
             <div class="details" style="margin-bottom: 10px;">
                 <label for="cef" style="width: 33.33%;">
                     <p style="margin-bottom: 0px;">cef</p>
-                    <input type="text" id="cef"  style="width: 98%;"/>
+                    <input type="text" id="cef" name="cef" v-model="cef" style="width: 98%;"/>
                 </label>
                 <label for="issue_date" style="width: 33.33%;">
                     <p style="margin-bottom: 0px;">Issue Date</p>
-                    <input type="date" id="issue_date" style="width: 98%;"/>
+                    <input type="date" id="issue_date" v-model="issue_date" name="issue_date" style="width: 98%;"/>
                 </label>
                 <label for="expiry_date" style="width: 33.33%;">
                     <p style="margin-bottom: 0px;">Expiry Date</p>
-                    <input type="date" id="expiry_date" style="width: 98%;"/>
+                    <input type="date" id="expiry_date" v-model="expiry_date" name="expiry_date" style="width: 98%;"/>
                 </label>
             </div>
             <p style="margin-bottom: 0px;">Amounts</p>
@@ -86,6 +87,9 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
          const app = Vue.createApp({
             data() {
                 return {
+                    issue_date: "<?php echo $invoice["issue_date"]; ?>",
+                    expiry_date: "<?php echo $invoice["expiry_date"]; ?>",
+                    cef: "<?php echo $invoice["cef"]; ?>",
                     payments: JSON.parse('<?php echo $invoice['invoice_data'] ?>'),
                 };
             },
@@ -111,9 +115,13 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                     const response = await axios.get("save_invoice.php", {
                         params: {
                             form_id: '<?php echo $_GET['id'] ?>',
-                            invoice_data: JSON.stringify(this.payments)
+                            invoice_data: JSON.stringify(this.payments),
+                            cef: this.cef,
+                            issue_date: this.issue_date,
+                            expiry_date: this.expiry_date
                         }
                     }) 
+                    console.log(response);
                     if(response.data === 1) {
                         alert("Succesfully updated!");
                     }

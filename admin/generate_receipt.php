@@ -137,11 +137,6 @@
                 border-collapse: collapse;
             }
     </style>
-    <script>
-        window.onload = function() {
-            window.print();
-        };
-    </script>
 </head>
 <body>
     <?php 
