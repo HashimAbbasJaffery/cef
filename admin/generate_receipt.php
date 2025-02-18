@@ -137,6 +137,11 @@
                 border-collapse: collapse;
             }
     </style>
+    <script>
+        window.onload = function() {
+            window.print();
+        }
+    </script>
 </head>
 <body>
     <?php 
@@ -161,7 +166,7 @@
         <div class="header d-flex justify-content-between">
        
             <div>
-                <h1 class="mt-2" style="font-weight: 500; margin-bottom: 3px;">INVOICE</h1>
+                <h1 class="mt-2" style="font-weight: 500; margin-bottom: 3px;">RECEIPT</h1>
                 <p style="font-size: 15px; margin-top: 0px; font-weight: 400;">from Gwadar Gymkhana (Pvt) Ltd.</p>
                 <p style="font-size: 8px;">PR120224 - <span style="font-style: italic;">All published prices are in PKR.</span></p>
             </div>
@@ -223,92 +228,68 @@
                 <td style="padding: 5px; text-align: right; font-weight: bold;"><?php echo number_format($total); ?>/-</td>
             </tr>
             <tr style="border-bottom: 1px solid black;">
-                <td style="width: 75%; border-left: 0px; padding: 5px; text-align: right;" colspan="2">Current Payable Amount</td>
-                <td style="padding: 5px; text-align: right; font-weight: bold;"><?php echo number_format($current_total) ?>/-</td>
-            </tr>
-        </table>
-        <p style="margin-top: 10px; font-size: 6px; line-height: 10px;">
-            <span style="font-weight: bold;">Important note:</span> The processing fee, membership from fee and down payment/full payment must be submitted as a single
-            transaction payment through. a Pay-Order, Crossed Cheque, or Online Payment, payable to 'Gwadar Gymkhana (Private) Limited.
-            All applicant's payments are non-refundable in accordance with the club's rules and bylaws. The membership fee and processing
-            fee are subject to change without prior notice. Applicant must pay the current membership fee as indicated on our official website.
-            Gwadar Gymkhana does not engage with agents or dealers. All payments are to be remitted solely to the designated bank account
-            provided herewith. Any payments directed to an account other than the aforementioned will be deemed non-compliant and,
-            accordingly, not accepted. Please ensure to pay prior to the expiration date.
-        </p>
-        <table style="width: 100%; margin-top: 10px;">
-            <tr>
-                <td style="padding: 5px; font-weight: bold;">Bank Al Habib</td>
-                <td style="padding: 5px; font-weight: bold;">Bank Alfalah</td>
-                <td style="padding: 5px; font-weight: bold;">Pay Online</td>
+                <td style="width: 75%; border-left: 0px; padding: 5px; text-align: right;" colspan="2">Paid</td>
+                <td style="padding: 5px; text-align: right; font-weight: bold;"><?php echo number_format($record["paid"]) ?>/-</td>
             </tr>
             <tr style="border-bottom: 1px solid black;">
-                <td style="padding: 5px; width: 33.33%;">
-                    <p style="line-height: 10px; font-size: 7px; margin-bottom: 10px;">
-                        Title: Gwadar Gymkhana Pvt. Ltd <br>
-                        Bank Al Habib Limited (Clifton) <br>
-                        Branch Code 1241
-                    </p>
-                    <p>
-                        Account number: <br>
-                        1241-0981-063986-01-1 <br>
-                        IBAN number: <br>
-                        PK22 BAHL1241098106398601
-                    </p>
-                </td>
-
-                <td style="padding: 5px;  width: 33.33%;">
-                    <p style="line-height: 10px; font-size: 7px; margin-bottom: 10px;">
-                        Title: Gwadar Gymkhana Pvt. Ltd <br>
-                        Bank Alfalah (Sea View) <br>
-                        Branch Code 0163
-                    </p>
-                    <p>
-                        Account number: <br>
-                        0163-1008382404 <br>
-                        IBAN number: <br>
-                        PK29 ALFH0163001008382404
-                    </p>
-                </td>
-
-                <td style="padding: 5px;  width: 33.33%; padding-bottom: 15px;">
-                    <p style="line-height: 10px; font-size: 7px;">
-                        Please go to
-                        www.gwadargymkhana.com.pk/pay-online/
-                        to pay the fee mentioned above. Keep in <br>
-                        mind that there will be a 3% bank charge <br>
-                        added to the transaction.
-                    </p>
-                    <img src="./images/visa.png" width="50" style="float:right;" />
-                </td>
+                <td style="width: 75%; border-left: 0px; padding: 5px; text-align: right;" colspan="2">Balance</td>
+                <td style="padding: 5px; text-align: right; font-weight: bold;"><?php echo number_format($record["balance"]) ?>/-</td>
             </tr>
-        </table>  
+        </table>
         <table style="width: 100%; margin-top: 10px;">
             <tr>
                 <td style="padding: 5px;">
                     <div>
-                        <span style="font-weight: bold; text-transform: capitalize;">Issue date: </span>
-                        <?php echo date("Y/m/d", strtotime($record["issue_date"])) ?>
-                        <span style="font-weight: bold; margin-left: 10px; text-transform: capitalize;">Expiry date: </span>
-                        <?php echo date("Y/m/d", strtotime($record["expiry_date"]))?>
+                        <span style="text-transform: capitalize;"><span style="font-weight: bold;">Date:</span> <?php echo date('d/m/Y'); ?></span>
                     </div>
                 </td>
                 <td style="padding: 5px; font-weight: bold;">Approved by finance department</td>
             </tr>
             <tr style="border-bottom: 1px solid black;">
-                <td style="padding: 5px; width: 33.33%;">
-                    <p style="line-height: 10px; font-size: 7px; text-align: center; margin: 5px 5px;">
+                <td style="padding: 5px; width: 30%;">
+                    <p style="line-height: 10px; font-size: 7px; text-align: left; margin: 5px 5px;">
                         <span style="font-weight: bold;">Invoice generated and signed by</span>
                         <br>
                         Khadija Basheer Baloch
                     </p>
                 </td>
 
-                <td style="padding: 5px;  width: 33.33%;">
+                <td style="padding: 5px;  width: 70%;">
                     &nbsp;
                 </td>
             </tr>
         </table>  
+        <table style="width: 100%; margin-top: 10px;">
+            <tr>
+                <td style="font-weight: bold; padding: 10px; text-transform: capitalize;">Upon completion of payment, please direct all communication to the following departments:</td>
+            </tr>
+        </table>
+        <table style="width: 100%; border-bottom: 1px solid black;">
+            <tr>
+                <td style="padding: 10px; line-height: 10px; width: 20%; text-transform: capitalize; font-weight: bold;">
+                    Member Services <br>
+                    Department
+                </td>
+                <td style="text-transform: capitalize; padding: 10px; line-height: 10px;">For correspondence regarding membership approval and membership cards.</td>
+                <td style="text-transform: capitalize; padding: 10px;">member.services@gwadargymkhana.com.pk</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; line-height: 10px; text-transform: capitalize; font-weight: bold;">
+                    Reciprocal <br>
+                    Department
+                </td>
+                <td style="text-transform: capitalize; padding: 10px; line-height: 10px;">For introduction letters for reciprocal clubs.</td>
+                <td style="text-transform: capitalize; padding: 10px;">reciprocal@gwadargymkhana.com.pk</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; line-height: 10px; text-transform: capitalize; font-weight: bold;">
+                    Finance <br>
+                    Department
+                </td>
+                <td style="text-transform: capitalize; padding: 10px; line-height: 10px;">For matters relating to bank payments and monthly instalments.</td>
+                <td style="text-transform: capitalize; padding: 10px;">finance@gwadargymkhana.com.pk</td>
+            </tr>
+        </table>
         <p style="font-weight: bold; text-align: center; margin-top: 10px;">If you have any questions, please call us at +9221 111 947 111 or email us info@gwadargymkhana.com.pk</p>
 
                 

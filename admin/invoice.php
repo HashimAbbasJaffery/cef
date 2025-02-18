@@ -27,7 +27,8 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 <p><span>Address: </span><?php  echo $customer["adress"] ?></p>
                 <p><span>Phone: </span><?php echo $customer['mobile'] ?></p>
                 <a href="generate_invoice.php?id=<?php echo $customer["id"] ?>" class="bg-primary" style="padding: 5px 10px 5px 10px; color: white; margin-bottom: 30px;">Generate Invoice</a>
-                <a href="offer.php?id=<?php echo $customer["id"] ?>" class="ml-2 bg-dark" style="padding: 5px 10px 5px 10px; color: white; margin-bottom: 30px;">Offer</a>
+                <a href="generate_receipt.php?id=<?php echo $customer["id"] ?>" class="bg-primary" style="padding: 5px 10px 5px 10px; color: white; margin-bottom: 30px; margin-left: 10px;">Generate Receipt</a>
+                <a href="offer.php?id=<?php echo $customer["id"] ?>" class="ml-2 bg-warning" style="padding: 5px 10px 5px 10px; color: white; margin-bottom: 30px;">Offer</a>
             </div>
         </div>
         <div class="amounts container-fluid" style="margin-top: 30px;">
@@ -43,6 +44,14 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 <label for="expiry_date" style="width: 33.33%;">
                     <p style="margin-bottom: 0px;">Expiry Date</p>
                     <input type="date" id="expiry_date" v-model="expiry_date" name="expiry_date" style="width: 98%;"/>
+                </label>
+                <label for="expiry_date" style="width: 50%;">
+                    <p style="margin-bottom: 0px;">Paid</p>
+                    <input type="number" id="paid" v-model="paid" name="paid" style="width: 99%;"/>
+                </label>
+                <label for="expiry_date" style="width: 50%;">
+                    <p style="margin-bottom: 0px;">Balance</p>
+                    <input type="number" id="balance" v-model="balance" name="balance" style="width: 99%;"/>
                 </label>
             </div>
             <p style="margin-bottom: 0px;">Amounts</p>
@@ -87,10 +96,12 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
          const app = Vue.createApp({
             data() {
                 return {
-                    issue_date: "<?php echo $invoice["issue_date"]; ?>",
-                    expiry_date: "<?php echo $invoice["expiry_date"]; ?>",
-                    cef: "<?php echo $invoice["cef"]; ?>",
-                    payments: JSON.parse('<?php echo $invoice['invoice_data'] ?>'),
+                    issue_date: "<?php echo $invoice["issue_date"] ?? null; ?>",
+                    expiry_date: "<?php echo $invoice["expiry_date"] ?? null; ?>",
+                    cef: "<?php echo $invoice["cef"] ?? null; ?>",
+                    payments: JSON.parse("<?php echo $invoice['invoice_data'] ?? false ?>"),
+                    paid: "<?php echo $invoice["paid"] ?? null ?>",
+                    balance: "<?php echo $invoice["balance"] ?? null ?>",
                 };
             },
             methods: {
@@ -118,7 +129,9 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                             invoice_data: JSON.stringify(this.payments),
                             cef: this.cef,
                             issue_date: this.issue_date,
-                            expiry_date: this.expiry_date
+                            expiry_date: this.expiry_date,
+                            paid: this.paid,
+                            balance: this.balance
                         }
                     }) 
                     console.log(response);

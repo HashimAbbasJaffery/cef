@@ -193,7 +193,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
         <div class="congratulations" style="border: 2px dashed #000; margin-top: 20px; padding: 10px;">
             <p style="font-size: 20px; text-align: center; line-height: 20px;"><span style="font-weight: bolder;">Congratulations!</span> You are eligible for <br> Gwadar Gymkhana Membership</p>
         </div>
-        <div class="claim-amount" style="margin-top: 20px; color: white; background: rgb(220,19,53);
+        <div class="claim-amount" style="border-radius: 3px; margin-top: 20px; color: white; background: rgb(220,19,53);
                                         background: linear-gradient(180deg, rgba(220,19,53,1) 0%, rgba(211,54,81,1) 100%);;">
             <p style="font-size: 25px; padding: 13px; font-weight: bolder; text-align: center;">Claim Your PKR 100,000/-</p>
         </div>
@@ -206,12 +206,12 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
             <p style="font-size: 20px; text-align: center; font-weight: 600; color: #dc1335;">Redeem Before <?php echo $expiry ?>!</p>
         </div>
         <div class="terms&condition" style="margin-top: 20px; line-height: 20px;">
-            <p style="font-weight: bold; font-size: 12px; margin-bottom: 10px;">Terms &amp; Conditions for Redeemable Offer:</p>
-            <p style="font-size: 12px;">1. This amount must be redeemed before it expires on <span style="font-weight: bold"><?php echo $expiry; ?></span>; after expiry, it cannot be used</p>
-            <p style="font-size: 12px; margin-bottom: 5px;">2. It is strictly non-transferable and can only be used once per CNIC or Passport number. The same person cannot apply this amount again.</p>
-            <p style="font-size: 12px; margin-bottom: 5px;">3. The amount is redeemable on all membership plans except Permanent Membership Special Edition.</p>
-            <p style="font-size: 12px; margin-bottom: 5px;">4. For Permanent Membership Special Edition, only *PKR 35,000 is redeemable before expiry</p>
-            <p style="font-size: 12px; margin-bottom: 5px;">5. The club reserves the right to modify or withdraw this offer at its discretion without</p>
+            <p style="font-weight: bold; font-size: 12px; margin-bottom: 8px;">Terms &amp; Conditions for Redeemable Offer:</p>
+            <p style="font-size: 12px; margin-bottom: 8px;">1. This amount must be redeemed before it expires on <span style="font-weight: bold"><?php echo $expiry; ?></span>; after expiry, it cannot be used</p>
+            <p style="font-size: 12px; margin-bottom: 8px;">2. It is strictly non-transferable and can only be used once per CNIC or Passport number. The same person cannot apply this amount again.</p>
+            <p style="font-size: 12px; margin-bottom: 8px;">3. The amount is redeemable on all membership plans except Permanent Membership Special Edition.</p>
+            <p style="font-size: 12px; margin-bottom: 8px;">4. For Permanent Membership Special Edition, only *PKR 35,000 is redeemable before expiry</p>
+            <p style="font-size: 12px; margin-bottom: 8px;">5. The club reserves the right to modify or withdraw this offer at its discretion without</p>
         </div>
  
                 
