@@ -4,6 +4,21 @@
         outline: none;
         cursor: pointer;
     }
+    input {
+        border: 1px solid #cdcdcd;
+        padding: 5px;
+        color: #7d7d7d;
+        font-size: 13px !important;
+        border-radius: 5px;
+    }
+    button, a {
+        border-radius: 5px !important;
+    }
+    
+    button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
     </style>
 <?php 
 
@@ -40,11 +55,11 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
         </div>
         <div class="amounts container-fluid" style="margin-top: 30px;">
             <div class="details" style="margin-bottom: 10px;">
-                <label for="issue_date" style="width: 33.33%;">
+                <label for="issue_date" style="width: 50%;">
                     <p style="margin-bottom: 0px;">Issue Date</p>
                     <input type="date" id="issue_date" v-model="issue_date" name="issue_date" style="width: 98%;"/>
                 </label>
-                <label for="expiry_date" style="width: 33.33%;">
+                <label for="expiry_date" style="width: 50%;">
                     <p style="margin-bottom: 0px;">Expiry Date</p>
                     <input type="date" id="expiry_date" v-model="expiry_date" name="expiry_date" style="width: 98%;"/>
                 </label>
@@ -54,12 +69,15 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 </label>
                 <label for="expiry_date" style="width: 50%;">
                     <p style="margin-bottom: 0px;">Balance</p>
-                    <input type="text" id="balance" :value="balance.toLocaleString('en-US')" @input="balance = Number($event.target.value.replace(/,+/g, '')).toLocaleString('en-US')" name="balance" style="width: 99%;" readonly/>
+                    <input type="text" id="balance" :value="(payments.reduce((sum, item) => 
+                    sum + parseInt(String(item.price).replace(/,/g, '')), 0) - paid.replace(/,+/g, '')).toLocaleString('en-US')"  name="balance" style="width: 99%;" readonly/>
                 </label>
             </div>
+            <div class="separator" style="background: #cdcdcd; width: 100%; height: 1px; margin-top: 20px; margin-bottom: 20px;">&nbsp;</div>
+      
             <p style="margin-bottom: 0px;">Amounts</p>
             <div class="amount" v-for="(payment, index) in payments">
-                <div class="description" style="width: 100%; display: flex; align-items: start;">
+                <div class="description" style="width: 100%; display: flex; align-items: start; margin-bottom: 5px">
                     <input type="text" style="width: 60%; margin-right: 10px;" v-model="payment.description" placeholder="Description" />
                     <input type="date" style="width: 10%; margin-right: 10px;" v-model="payment.date" placeholder="Due Date" />
                     <input type="text" style="width: 10%; margin-right: 10px;" :value="payment.price" @input="payment.price = Number($event.target.value.replace(/,+/g, '')).toLocaleString('en-US')" placeholder="Price" />
@@ -67,22 +85,30 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                         <span>Current Payable</span> <br>
                         <input :id="`cp-${payment.id}`" type="checkbox" v-model="payment.cp" />
                     </label>
-                    <button v-if="(payments.length - 1) == index" class="bg-primary text-white" style="margin-left: 10px; border: none;" @click="addNew"> 
+                    <button v-if="(payments.length - 1) == index" class="text-white" style="padding: 5px; background: black; border: 1px solid black; margin-left: 10px;" @click="addNew"> 
                         <i class="fa-solid fa-plus"></i>
                     </button>
-                    <button @click="remove(payment.id)" v-else class="bg-danger text-white" style="margin-left: 10px; border: none;">
-                        <i class="fa-solid fa-minus"></i>
+                    <button @click="remove(payment.id)" v-else class="bg-white text-black" style="border: 1px solid black; margin-left: 10px; padding: 5px;">
+                        <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
             </div>
         </div>
         <div class="container-fluid" style="margin-top: 30px; display: flex; justify-content: space-between;">
             <div style="display: flex; justify-content: end; flex-direction: column; align-items: end; width: 50%; order: 2;">
-                <p style="margin: 0px;">Payable Amount: <span v-text="payments.reduce((sum, item) => sum + parseInt(item.price), 0).toLocaleString('en-US')"></span>/-</p>
-                <p>Current Payable Amount: <span v-text="payments.reduce((sum, item) =>  item.cp ? sum + parseInt(item.price) : sum, 0).toLocaleString('en-US')"></span>/-</p>
+                <p style="margin: 0px;">
+                Payable Amount: 
+                <span v-text="payments.reduce((sum, item) => 
+                    sum + parseInt(String(item.price).replace(/,/g, '')), 0).toLocaleString('en-US')">
+                </span>/-
+                </p>
+<p>Current Payable Amount: <span v-text="payments.reduce((sum, item) =>  item.cp ? sum + parseInt(item.price.replace(/,/g, '')) : sum, 0).toLocaleString('en-US')"></span>/-</p>
             </div>
             <div style="width: 50%;">
-                <button class="btn-primary" style="border: none; padding: 5px 10px 5px 10px;" @click="save">Save</button>
+                <button class="btn-primary" style="border: none; padding: 5px 10px 5px 10px;" @click="save" :disabled="is_saving">
+                    <span v-if="!is_saving">Save</span>
+                    <span v-else>Saving...</span>
+                </button>
             </div>
         </div>
         </div>
@@ -105,6 +131,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                     payments: JSON.parse(<?php echo json_encode($invoice['invoice_data'] ?? '[]'); ?>),
                     paid: "<?php echo $invoice["paid"] ?? null ?>",
                     balance: 0,
+                    is_saving: false
                 };
             },
             mounted() {
@@ -117,24 +144,25 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                         cp: false
                     })
                 }
-                const total = this.payments?.reduce((sum, item) =>  sum + item.price, 0) ?? 0
-                this.balance = (total) ? total - this.paid : 0
 
-                this.paid = this.paid.toLocaleString('en-US');
-                this.balance = this.balance.toLocaleString('en-US');
+                // Format numbers with commas
+                this.paid = Number(this.paid).toLocaleString('en-US');
+                this.payments.forEach(payment => {
+                    payment.price = Number(payment.price).toLocaleString('en-US');
+                })
             },
             watch: {
-                paid() {
-                    const total = this.payments?.reduce((sum, item) =>  sum + parseInt(item.price), 0) ?? 0
-                    this.balance = (total) ? total - Number(this.paid.replace(/,/g, "")) : 0
-                },
-                payments: {
-                    handler() {
-                        const total = this.payments?.reduce((sum, item) =>  sum + parseInt(item.price), 0) ?? 0
-                        this.balance = (total) ? total - this.paid : 0
-                    },
-                    deep: true
-                }
+                // paid() {
+                //     const total = this.payments?.reduce((sum, item) =>  sum + parseInt(item.price), 0) ?? 0
+                //     this.balance = (total) ? total - Number(this.paid.replace(/,/g, "")) : 0
+                // },
+                // payments: {
+                //     handler() {
+                //         const total = this.payments?.reduce((sum, item) =>  sum + parseInt(item.price), 0) ?? 0
+                //         this.balance = (total) ? total - Number(this.paid.replace(/,/g, "")) : 0
+                //     },
+                //     deep: true
+                // }
             },
             methods: {
                 updatePaid(value) {
@@ -161,6 +189,11 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                     });
                 },
                 async save() {
+                    this.is_saving = true;
+                    this.paid = this.paid.replace(/,/g, "")
+                    this.payments.forEach(payment => {
+                        payment.price = payment.price.replace(/,/g, "")
+                    })
                     const response = await axios.get("save_invoice.php", {
                         params: {
                             form_id: '<?php echo $_GET['id'] ?>',
@@ -169,14 +202,20 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                             issue_date: this.issue_date,
                             expiry_date: this.expiry_date,
                             paid: this.paid > 0 ? this.paid : 0,
-                            balance: this.balance > 0 ? this.balance : 0
+                            balance: balance.value.replace(/,/g, "")
                         }
                     }) 
                     if(response.data === 1) {
-                        alert("Succesfully updated!");
+                        Swal.fire({
+                            title: "Saved!",
+                            text: "Inserted data has been saved!",
+                            icon: "success"
+                        });
                     } else {
                         alert("Please fill all fields");
                     }
+                    console.log(response.data); 
+                    this.is_saving = false
                 }
             }
         });
