@@ -50,7 +50,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 </label>
                 <label for="expiry_date" style="width: 50%;">
                     <p style="margin-bottom: 0px;">Paid</p>
-                    <input type="text" id="paid" :value="paid.toLocaleString('en-US')" @input="paid = $event.target.value" name="paid" style="width: 99%;"/>
+                    <input type="text" id="paid" :value="paid" @input="paid = Number($event.target.value.replace(/,+/g, '')).toLocaleString('en-US')" name="paid" style="width: 99%;"/>
                 </label>
                 <label for="expiry_date" style="width: 50%;">
                     <p style="margin-bottom: 0px;">Balance</p>
@@ -134,6 +134,12 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 }
             },
             methods: {
+                updatePaid(value) {
+                    const rawValue = value.replace(/,/g, ""); // Remove all commas
+                    if (!isNaN(rawValue) && rawValue !== "") {
+                        paid.value = rawValue; // Store numeric value without commas
+                    }
+                },
                 addNew() {
                     this.payments.push({
                         id: this.payments.length + 1,
