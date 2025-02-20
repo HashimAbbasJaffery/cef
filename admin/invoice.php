@@ -54,7 +54,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 </label>
                 <label for="expiry_date" style="width: 50%;">
                     <p style="margin-bottom: 0px;">Balance</p>
-                    <input type="number" id="balance" :value="balance" @input="balance = Number($event.target.value.replace(/,+/g, '')).toLocaleString('en-US')" name="balance" style="width: 99%;" readonly/>
+                    <input type="text" id="balance" :value="balance.toLocaleString('en-US')" @input="balance = Number($event.target.value.replace(/,+/g, '')).toLocaleString('en-US')" name="balance" style="width: 99%;" readonly/>
                 </label>
             </div>
             <p style="margin-bottom: 0px;">Amounts</p>
@@ -126,7 +126,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
             watch: {
                 paid() {
                     const total = this.payments?.reduce((sum, item) =>  sum + parseInt(item.price), 0) ?? 0
-                    this.balance = (total) ? total - this.paid : 0
+                    this.balance = (total) ? total - Number(this.paid.replace(/,/g, "")) : 0
                 },
                 payments: {
                     handler() {
