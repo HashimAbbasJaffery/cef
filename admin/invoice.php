@@ -54,7 +54,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 </label>
                 <label for="expiry_date" style="width: 50%;">
                     <p style="margin-bottom: 0px;">Balance</p>
-                    <input type="number" id="balance" v-model="balance" name="balance" style="width: 99%;" readonly/>
+                    <input type="number" id="balance" :value="balance" @input="balance = Number($event.target.value.replace(/,+/g, '')).toLocaleString('en-US')" name="balance" style="width: 99%;" readonly/>
                 </label>
             </div>
             <p style="margin-bottom: 0px;">Amounts</p>
@@ -62,7 +62,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 <div class="description" style="width: 100%; display: flex; align-items: start;">
                     <input type="text" style="width: 60%; margin-right: 10px;" v-model="payment.description" placeholder="Description" />
                     <input type="date" style="width: 10%; margin-right: 10px;" v-model="payment.date" placeholder="Due Date" />
-                    <input type="text" style="width: 10%; margin-right: 10px;" v-model="payment.price" placeholder="Price" />
+                    <input type="text" style="width: 10%; margin-right: 10px;" :value="payment.price" @input="payment.price = Number($event.target.value.replace(/,+/g, '')).toLocaleString('en-US')" placeholder="Price" />
                     <label :for="`cp-${payment.id}`" style="font-size: 10px;">
                         <span>Current Payable</span> <br>
                         <input :id="`cp-${payment.id}`" type="checkbox" v-model="payment.cp" />
@@ -119,6 +119,9 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 }
                 const total = this.payments?.reduce((sum, item) =>  sum + item.price, 0) ?? 0
                 this.balance = (total) ? total - this.paid : 0
+
+                this.paid = this.paid.toLocaleString('en-US');
+                this.balance = this.balance.toLocaleString('en-US');
             },
             watch: {
                 paid() {
