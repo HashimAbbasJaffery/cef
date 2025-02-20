@@ -12,7 +12,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testing</title>
+    <title><?php echo $customer["name"] ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         @media print{
@@ -157,7 +157,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
     </script>
 </head>
 <body>
-    <div class="container-fluid mt-4">
+    <div class="container-fluid mt-4" style="padding: 35px;">
     <div class="bc-head-txt-label bc-head-icon-chrome_android"><?php echo $customer['unique_key']; ?></div>
         <div class="header d-flex justify-content-between">
        

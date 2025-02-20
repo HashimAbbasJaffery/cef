@@ -1,3 +1,10 @@
+<style>
+    input:read-only {
+        background-color: #D3D3D3;
+        outline: none;
+        cursor: pointer;
+    }
+    </style>
 <?php 
 
 include "header.php";
@@ -33,10 +40,6 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
         </div>
         <div class="amounts container-fluid" style="margin-top: 30px;">
             <div class="details" style="margin-bottom: 10px;">
-                <label for="cef" style="width: 33.33%;">
-                    <p style="margin-bottom: 0px;">cef</p>
-                    <input type="text" id="cef" name="cef" v-model="cef" style="width: 98%;"/>
-                </label>
                 <label for="issue_date" style="width: 33.33%;">
                     <p style="margin-bottom: 0px;">Issue Date</p>
                     <input type="date" id="issue_date" v-model="issue_date" name="issue_date" style="width: 98%;"/>
@@ -47,11 +50,11 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 </label>
                 <label for="expiry_date" style="width: 50%;">
                     <p style="margin-bottom: 0px;">Paid</p>
-                    <input type="number" id="paid" v-model="paid" name="paid" style="width: 99%;"/>
+                    <input type="text" id="paid" :value="paid.toLocaleString('en-US')" @input="paid = $event.target.value" name="paid" style="width: 99%;"/>
                 </label>
                 <label for="expiry_date" style="width: 50%;">
                     <p style="margin-bottom: 0px;">Balance</p>
-                    <input type="number" id="balance" v-model="balance" name="balance" style="width: 99%;"/>
+                    <input type="number" id="balance" v-model="balance" name="balance" style="width: 99%;" readonly/>
                 </label>
             </div>
             <p style="margin-bottom: 0px;">Amounts</p>
@@ -59,7 +62,7 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 <div class="description" style="width: 100%; display: flex; align-items: start;">
                     <input type="text" style="width: 60%; margin-right: 10px;" v-model="payment.description" placeholder="Description" />
                     <input type="date" style="width: 10%; margin-right: 10px;" v-model="payment.date" placeholder="Due Date" />
-                    <input type="number" style="width: 10%; margin-right: 10px;" v-model="payment.price" placeholder="Price" />
+                    <input type="text" style="width: 10%; margin-right: 10px;" v-model="payment.price" placeholder="Price" />
                     <label :for="`cp-${payment.id}`" style="font-size: 10px;">
                         <span>Current Payable</span> <br>
                         <input :id="`cp-${payment.id}`" type="checkbox" v-model="payment.cp" />
@@ -75,8 +78,8 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
         </div>
         <div class="container-fluid" style="margin-top: 30px; display: flex; justify-content: space-between;">
             <div style="display: flex; justify-content: end; flex-direction: column; align-items: end; width: 50%; order: 2;">
-                <p style="margin: 0px;">Payable Amount: <span v-text="payments.reduce((sum, item) => sum + item.price, 0)"></span>/-</p>
-                <p>Current Payable Amount: <span v-text="payments.reduce((sum, item) =>  item.cp ? sum + item.price : sum, 0)"></span>/-</p>
+                <p style="margin: 0px;">Payable Amount: <span v-text="payments.reduce((sum, item) => sum + parseInt(item.price), 0).toLocaleString('en-US')"></span>/-</p>
+                <p>Current Payable Amount: <span v-text="payments.reduce((sum, item) =>  item.cp ? sum + parseInt(item.price) : sum, 0).toLocaleString('en-US')"></span>/-</p>
             </div>
             <div style="width: 50%;">
                 <button class="btn-primary" style="border: none; padding: 5px 10px 5px 10px;" @click="save">Save</button>
@@ -98,11 +101,37 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                 return {
                     issue_date: "<?php echo $invoice["issue_date"] ?? null; ?>",
                     expiry_date: "<?php echo $invoice["expiry_date"] ?? null; ?>",
-                    cef: "<?php echo $invoice["cef"] ?? null; ?>",
-                    payments: JSON.parse("<?php echo $invoice['invoice_data'] ?? false ?>"),
+                    cef: "<?php echo $customer['unique_key'] ?>",
+                    payments: JSON.parse(<?php echo json_encode($invoice['invoice_data'] ?? '[]'); ?>),
                     paid: "<?php echo $invoice["paid"] ?? null ?>",
-                    balance: "<?php echo $invoice["balance"] ?? null ?>",
+                    balance: 0,
                 };
+            },
+            mounted() {
+                if(!this.payments.length) {
+                    this.payments.push({
+                        id: 1,
+                        description: "",
+                        date: "",
+                        price: 0,
+                        cp: false
+                    })
+                }
+                const total = this.payments?.reduce((sum, item) =>  sum + item.price, 0) ?? 0
+                this.balance = (total) ? total - this.paid : 0
+            },
+            watch: {
+                paid() {
+                    const total = this.payments?.reduce((sum, item) =>  sum + parseInt(item.price), 0) ?? 0
+                    this.balance = (total) ? total - this.paid : 0
+                },
+                payments: {
+                    handler() {
+                        const total = this.payments?.reduce((sum, item) =>  sum + parseInt(item.price), 0) ?? 0
+                        this.balance = (total) ? total - this.paid : 0
+                    },
+                    deep: true
+                }
             },
             methods: {
                 addNew() {
@@ -130,13 +159,14 @@ $customer = mysqli_fetch_assoc( $fetchAllData);
                             cef: this.cef,
                             issue_date: this.issue_date,
                             expiry_date: this.expiry_date,
-                            paid: this.paid,
-                            balance: this.balance
+                            paid: this.paid > 0 ? this.paid : 0,
+                            balance: this.balance > 0 ? this.balance : 0
                         }
                     }) 
-                    console.log(response);
                     if(response.data === 1) {
                         alert("Succesfully updated!");
+                    } else {
+                        alert("Please fill all fields");
                     }
                 }
             }

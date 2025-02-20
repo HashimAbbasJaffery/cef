@@ -3,7 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testing</title>
+    <?php 
+    
+    include "db_conn.php";
+    $id = $_GET['id'];
+    $fetchAllData = mysqli_query($conn,"SELECT * FROM form WHERE id = $id");
+    $customer = mysqli_fetch_assoc( $fetchAllData);
+    
+    ?>
+    <?php 
+    
+    $id = $_GET['id'];
+    $invoice_data = mysqli_query($conn,"SELECT * FROM invoices WHERE form_id = $id");
+    $data = mysqli_fetch_assoc( $invoice_data);   
+    $record = $data;
+    $invoice_data = json_decode($data["invoice_data"]);   
+    
+    ?>
+    <title><?php echo $customer["name"] ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         @media print{
@@ -144,25 +161,8 @@
     </script>
 </head>
 <body>
-    <?php 
-    
-    include "db_conn.php";
-    $id = $_GET['id'];
-    $fetchAllData = mysqli_query($conn,"SELECT * FROM form WHERE id = $id");
-    $customer = mysqli_fetch_assoc( $fetchAllData);
-    
-    ?>
-    <?php 
-    
-    $id = $_GET['id'];
-    $invoice_data = mysqli_query($conn,"SELECT * FROM invoices WHERE form_id = $id");
-    $data = mysqli_fetch_assoc( $invoice_data);   
-    $record = $data;
-    $invoice_data = json_decode($data["invoice_data"]);   
-    
-    ?>
-    <div class="container-fluid mt-4">
-    <div class="bc-head-txt-label bc-head-icon-chrome_android">120</div>
+
+    <div class="container-fluid mt-4" style="padding: 35px;">
         <div class="header d-flex justify-content-between">
        
             <div>
@@ -184,7 +184,7 @@
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
             <tr>
                 <td style="padding: 5px; width: 50%;"><span style="font-weight: bold;">Bill to: </span><?php echo $customer["name"] ?></td>
-                <td style="padding: 5px; white-space: nowrap;"><span style="font-weight: bold;">CEF no: </span><?php echo $record["cef"] ?></td>
+                <td style="padding: 5px; white-space: nowrap;"><span style="font-weight: bold;">CEF no: </span><?php echo explode(" ", $customer["unique_key"])[1]; ?></td>
                 <td style="padding: 5px; white-space: nowrap;"><span style="font-weight: bold;">Invoice no: </span><?php echo mt_rand(100000, 999999) ?></td>
         </table>
         <table style="width: 100%; border-bottom: 1px solid black;">

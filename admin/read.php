@@ -87,7 +87,7 @@ include "header.php";
                                                 <td><?php echo $row ['applying'];?></td>
                                                 <td>
                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                    <a href="view.php?id=<?= $row ['id'];?>" class="btn btn-outline-success mr-3">Invoice</a>
+                                                    <a href="invoice.php?id=<?= $row ['id'];?>" class="btn btn-outline-success mr-3"><i class="fa-solid fa-file-invoice"></i></a>
                                                         <a href="view.php?id=<?= $row ['id'];?>" class="btn btn-outline-success mr-3"><i class="fa-solid fa-eye"></i></a>
                                                         <button class="btn btn-outline-primary highlight-btn mr-3" data-id="<?= $row['id']; ?>"><i class="fa-solid fa-highlighter"></i></button>
                                                         <a href="delete.php?id=<?= $row ['id'];?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btn btn-outline-danger"><i class="fa-solid fa-trash-can"></i></a>
